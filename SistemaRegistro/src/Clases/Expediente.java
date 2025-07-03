@@ -4,6 +4,7 @@
  */
 package Clases;
 
+import java.time.LocalDateTime;
 /**
  *
  * @author hidea
@@ -14,6 +15,9 @@ public class Expediente {
     private String dni;
     private String asunto;
     private String documento;
+    private LocalDateTime fechaInicio;
+    private LocalDateTime fechaFinal;
+    private String documentoResultado;
 
     public Expediente(String identificador, int prioridad, String dni, String asunto, String documento) {
         this.identificador = identificador;
@@ -21,6 +25,9 @@ public class Expediente {
         this.dni = dni;
         this.asunto = asunto;
         this.documento = documento;
+        this.fechaInicio = LocalDateTime.now();
+        this.fechaFinal = null;
+        this.documentoResultado = null;
     }
 
     public String getIdentificador() {
@@ -61,6 +68,30 @@ public class Expediente {
 
     public void setDocumento(String documento) {
         this.documento = documento;
+    }
+
+    public LocalDateTime getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(LocalDateTime fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public LocalDateTime getFechaFinal() {
+        return fechaFinal;
+    }
+
+    public void setFechaFinal(LocalDateTime fechaFinal) {
+        this.fechaFinal = fechaFinal;
+    }
+
+    public String getDocumentoResultado() {
+        return documentoResultado;
+    }
+
+    public void setDocumentoResultado(String documentoResultado) {
+        this.documentoResultado = documentoResultado;
     }
     
     
