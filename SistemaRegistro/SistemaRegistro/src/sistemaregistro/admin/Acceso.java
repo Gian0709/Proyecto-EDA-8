@@ -4,7 +4,6 @@
  */
 package sistemaregistro.admin;
 
-import Clases.GestionExpediente;
 import javax.swing.JOptionPane;
 
 /**
@@ -124,8 +123,7 @@ public class Acceso extends javax.swing.JFrame {
         String contraseña = new String(PwContraseña.getPassword());
         
         if(usuario.equals("admin") && contraseña.equals("ulima2025")){
-           GestionExpediente gestionExp = new GestionExpediente();
-           MenuPrincipal menu = new MenuPrincipal(gestionExp);
+           MenuPrincipal menu = new MenuPrincipal();
            menu.setVisible(true);
            this.dispose();
         } else{

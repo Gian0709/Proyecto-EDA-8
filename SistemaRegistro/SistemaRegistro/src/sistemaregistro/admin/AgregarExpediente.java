@@ -22,13 +22,12 @@ public class AgregarExpediente extends javax.swing.JFrame {
 
     /**
      * Creates new form AgregarExpediente
-     * @param gestionExp
      */
     public AgregarExpediente(GestionExpediente gestionExp){
         this.gestionExp = gestionExp;
         initComponents();
     }
-    private AgregarExpediente() {
+    public AgregarExpediente() {
         initComponents();
     }
 
@@ -159,11 +158,8 @@ public class AgregarExpediente extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        /* Create and display the form */   
-        java.awt.EventQueue.invokeLater(() -> {
-        GestionExpediente gestionExp = new GestionExpediente(); // Crea el gestor de expedientes
-        new AgregarExpediente(gestionExp).setVisible(true);     // Pasa el gestor al formulario
-    });
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(() -> new AgregarExpediente().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

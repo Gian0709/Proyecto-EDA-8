@@ -21,11 +21,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
     /**
      * Creates new form MenuPrincipal
      */
-    public MenuPrincipal(GestionExpediente gestionExp) {
-        this.gestionExp = gestionExp;
+    public MenuPrincipal() {
         initComponents();
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -113,8 +111,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
         this.jTable1.setModel(modelo_tabla);
         modelo_tabla.addColumn("Identificador");
         modelo_tabla.addColumn("Prioridad");
-        modelo_tabla.addColumn("Asunto");
         modelo_tabla.addColumn("DNI");
+        modelo_tabla.addColumn("Asunto");
         modelo_tabla.addColumn("Documento");
         
         Expediente aux;
@@ -161,11 +159,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> {
-        GestionExpediente gestionExp = new GestionExpediente(); // Se crea una sola vez
-        new MenuPrincipal(gestionExp).setVisible(true);          // Se pasa al menú principal
-    });
-
+        java.awt.EventQueue.invokeLater(() -> new MenuPrincipal().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
