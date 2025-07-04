@@ -4,6 +4,7 @@
  */
 package Clases;
 
+import java.util.List;
 /**
  *
  * @author hidea
@@ -102,5 +103,30 @@ public class GestionExpediente {
             actual = actual.getSiguiente();
         }
         return null;
+    }
+    
+    public Nodo obtenerExpedientesFiltrados(boolean finalizados) {
+        Nodo primeroFiltrado = null;
+        Nodo ultimoFiltrado = null;
+        Nodo actual = this.getPrimero();
+        
+        while (actual != null) {
+            Expediente exp = (Expediente) actual.getElemento();
+            boolean coincide =(finalizados && exp.getFechaFinal() != null) || (!finalizados && exp.getFechaFinal() == null);
+            
+            if (coincide) {
+                Nodo nuevoNodo = new Nodo(exp);
+                if (primeroFiltrado == null) {
+                    primeroFiltrado = nuevoNodo;
+                    ultimoFiltrado = nuevoNodo;
+                }
+                else {
+                    ultimoFiltrado.setSiguiente(nuevoNodo);
+                    ultimoFiltrado = nuevoNodo;
+                }
+            }
+            actual = actual.getSiguiente();
+        }
+        return primeroFiltrado;
     }
 }
