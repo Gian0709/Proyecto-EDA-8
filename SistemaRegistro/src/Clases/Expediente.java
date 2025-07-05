@@ -13,22 +13,32 @@ public class Expediente {
     private String identificador;
     private int prioridad;
     private String dni;
+    private String nombre;
+    private String telefono;
+    private String correo;
     private String asunto;
     private String documento;
     private LocalDateTime fechaInicio;
     private LocalDateTime fechaFinal;
     private String documentoResultado;
 
-    public Expediente(String identificador, int prioridad, String dni, String asunto, String documento) {
+    public Expediente(String identificador, int prioridad, String dni, String nombre, String telefono, String correo, String asunto, String documento) {
         this.identificador = identificador;
         this.prioridad = prioridad;
         this.dni = dni;
+        this.nombre = nombre;
+        this.telefono = telefono;
+        this.correo = correo;
         this.asunto = asunto;
         this.documento = documento;
         this.fechaInicio = LocalDateTime.now();
         this.fechaFinal = null;
         this.documentoResultado = null;
     }
+
+
+
+
 
     public String getIdentificador() {
         return identificador;
@@ -92,6 +102,30 @@ public class Expediente {
 
     public void setDocumentoResultado(String documentoResultado) {
         this.documentoResultado = documentoResultado;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
     }
     
     

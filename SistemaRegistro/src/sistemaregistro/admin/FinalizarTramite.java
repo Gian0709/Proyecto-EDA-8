@@ -146,32 +146,32 @@ public class FinalizarTramite extends javax.swing.JFrame {
 
     private void jFinalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFinalizarActionPerformed
         // TODO add your handling code here:
-        //Verifica si el usuario seleccionó un expediente
+        
         int filaSeleccionada = jTable1.getSelectedRow();
         if (filaSeleccionada == -1) {
             JOptionPane.showMessageDialog(this, "Por favor, selecciona un expediente para finalizar.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        // obtiene el ID
-        String idExpediente = jTable1.getValueAt(filaSeleccionada, 0).toString();
-        //Busca el expediente en la lista
-        Expediente exp = gestionExp.buscarPorID(idExpediente);
+        
+        String dniExspediente = jTable1.getValueAt(filaSeleccionada, 5).toString();
+        
+        Expediente exp = gestionExp.buscarPorDNI(dniExspediente);
         if (exp == null) {
             JOptionPane.showMessageDialog(this, "No se pudo encontrar el expediente.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        //pedir el documento generado al usuario
+        
         String documentoGenerado = JOptionPane.showInputDialog(this, "Ingrese el documento generado:");
-        if (documentoGenerado == null || documentoGenerado.trim().isEmpty()) {
+        if (documentoGenerado == null || documentoGenerado.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Debe ingresar un documento generado.", "Advertencia", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        //Actualizar el expediente y la fecha actual
+        
         exp.setDocumentoResultado(documentoGenerado);
         exp.setFechaFinal(java.time.LocalDateTime.now());
-        //Refresca la tabla para mostrar lo que no tienen fecha de finalización
+        
         cargarExpedientesNoFinalizados();
-        // Confirmar al usuario
+        
         JOptionPane.showMessageDialog(this, "El expediente ha sido finalizado exitosamente.");
     }//GEN-LAST:event_jFinalizarActionPerformed
 

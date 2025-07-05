@@ -93,11 +93,11 @@ public class GestionExpediente {
         }
     }
     
-    public Expediente buscarPorID(String id) {
+    public Expediente buscarPorDNI(String dni) {
         Nodo actual = this.getPrimero();
         while (actual != null) {
             Expediente exp = (Expediente) actual.getElemento();
-            if (exp.getIdentificador().equals(id)) {
+            if (exp.getIdentificador().equals(dni)) {
                 return exp;
             }
             actual = actual.getSiguiente();
