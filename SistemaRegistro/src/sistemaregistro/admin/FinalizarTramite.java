@@ -153,7 +153,7 @@ public class FinalizarTramite extends javax.swing.JFrame {
             return;
         }
         
-        String dniExspediente = jTable1.getValueAt(filaSeleccionada, 5).toString();
+        String dniExspediente = jTable1.getValueAt(filaSeleccionada, 1).toString();
         
         Expediente exp = gestionExp.buscarPorDNI(dniExspediente);
         if (exp == null) {

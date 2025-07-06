@@ -12,6 +12,7 @@ import java.util.List;
 public class GestionExpediente {
     
     private  Nodo primero;
+    private NodoMovimiento iniciMovimiento = null;
     
     public GestionExpediente(){
         primero = null;
@@ -97,7 +98,7 @@ public class GestionExpediente {
         Nodo actual = this.getPrimero();
         while (actual != null) {
             Expediente exp = (Expediente) actual.getElemento();
-            if (exp.getIdentificador().equals(dni)) {
+            if (exp.getDni().equals(dni)) {
                 return exp;
             }
             actual = actual.getSiguiente();
@@ -105,28 +106,74 @@ public class GestionExpediente {
         return null;
     }
     
-    public Nodo obtenerExpedientesFiltrados(boolean finalizados) {
-        Nodo primeroFiltrado = null;
-        Nodo ultimoFiltrado = null;
+    public FiltroFinalizar<Expediente> obtenerExpedientesFiltrados(boolean finalizados) {
+        FiltroFinalizar<Expediente> lista = new FiltroFinalizar<>();
+        Nodo actual = this.getPrimero();
+
+        while (actual != null) {
+            Expediente exp = (Expediente) actual.getElemento();
+            if ((finalizados && exp.getFechaFinal() != null) ||
+                (!finalizados && exp.getFechaFinal() == null)) {
+                lista.agregar(exp);
+            }
+            actual = actual.getSiguiente();
+        }
+        return lista;
+    }
+    
+    public void registrarMovimiento(String id, String dni,String nombre,String observacion){
+        Movimiento nuevo = new Movimiento(id, dni, nombre, observacion);
+        NodoMovimiento nodo = new NodoMovimiento(nuevo);
+        
+        if (iniciMovimiento == null) {
+            iniciMovimiento = nodo;
+        } else {
+            NodoMovimiento actual = iniciMovimiento;
+            while (actual.getSiguiente()!= null) {                
+                actual = actual.getSiguiente();
+            }
+            actual.setSiguiente(nodo);
+        }
+        
+    }
+     
+    public NodoMovimiento obtenerMovimientoporDNI(String dni){
+        NodoMovimiento primero = null;
+        NodoMovimiento ultimo = null;
+        NodoMovimiento actual  = iniciMovimiento;
+        
+        while (actual != null){
+            Movimiento m = actual.getMovimiento();
+            if (m.getDniExpediente().equals(dni)) {
+                NodoMovimiento nuevo = new NodoMovimiento(m);
+                if (primero == null) {
+                    primero = nuevo;
+                    ultimo = nuevo;
+                } else {
+                    ultimo.setSiguiente(nuevo);
+                    ultimo = nuevo;
+                }
+                actual = actual.getSiguiente();
+            }
+            
+        }
+        return  primero;
+    }
+    
+    public Alerta<Expediente> generarAlertasPendientes() {
+        Alerta<Expediente> alerta = new Alerta<>();
         Nodo actual = this.getPrimero();
         
         while (actual != null) {
             Expediente exp = (Expediente) actual.getElemento();
-            boolean coincide =(finalizados && exp.getFechaFinal() != null) || (!finalizados && exp.getFechaFinal() == null);
-            
-            if (coincide) {
-                Nodo nuevoNodo = new Nodo(exp);
-                if (primeroFiltrado == null) {
-                    primeroFiltrado = nuevoNodo;
-                    ultimoFiltrado = nuevoNodo;
-                }
-                else {
-                    ultimoFiltrado.setSiguiente(nuevoNodo);
-                    ultimoFiltrado = nuevoNodo;
-                }
+            if (exp.getFechaFinal() == null) {
+                alerta.agregarPrioridad(exp);
             }
             actual = actual.getSiguiente();
         }
-        return primeroFiltrado;
+        
+        
+        
+        return alerta;
     }
 }

@@ -4,6 +4,11 @@
  */
 package sistemaregistro.admin;
 
+import Clases.Expediente;
+import Clases.GestionExpediente;
+import Clases.NodoMovimiento;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author hidea
@@ -11,13 +16,20 @@ package sistemaregistro.admin;
 public class RegistroMovimiento extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(RegistroMovimiento.class.getName());
-
+    
     /**
      * Creates new form RegistroMovimiento
      */
-    public RegistroMovimiento() {
+    private String dniExpediente;
+    private GestionExpediente gestion;
+
+    public RegistroMovimiento(GestionExpediente gestion, String dni) {
         initComponents();
+        this.gestion = gestion;
+        this.dniExpediente = dni;
     }
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -28,21 +40,99 @@ public class RegistroMovimiento extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        TMovimiento = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        TAObservacion = new javax.swing.JTextArea();
+        BGuardar = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jLabel1.setText("Nombre del movimiento");
+
+        jLabel2.setText("Observacion");
+
+        jLabel3.setText("Registro de Movimiento");
+
+        TAObservacion.setColumns(20);
+        TAObservacion.setRows(5);
+        jScrollPane1.setViewportView(TAObservacion);
+
+        BGuardar.setText("Guardar");
+        BGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BGuardarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(137, 137, 137)
+                        .addComponent(jLabel3))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(147, 147, 147)
+                        .addComponent(BGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(43, 43, 43)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(TMovimiento))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(39, 39, 39)
+                .addComponent(jLabel3)
+                .addGap(49, 49, 49)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(TMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(31, 31, 31)
+                        .addComponent(jLabel2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(49, 49, 49)
+                .addComponent(BGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(48, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void BGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BGuardarActionPerformed
+        // TODO add your handling code here:
+        String movimiento = TMovimiento.getText();
+        String observacion = TAObservacion.getText();
+        
+        Expediente exp = gestion.buscarPorDNI(dniExpediente);
+
+        if (exp == null) {
+            JOptionPane.showMessageDialog(this, "No se encontró el expediente con DNI: " + dniExpediente);
+            return;
+        }
+
+    
+        gestion.registrarMovimiento(exp.getIdentificador(), exp.getDni(), movimiento, observacion);
+        javax.swing.JOptionPane.showMessageDialog(this, "Movimiento registrado correctamente");
+        this.dispose();
+    }//GEN-LAST:event_BGuardarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -66,9 +156,26 @@ public class RegistroMovimiento extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new RegistroMovimiento().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> {
+            GestionExpediente gestionExp = new GestionExpediente();
+
+            // Pedir DNI antes de abrir el formulario
+            String dni = javax.swing.JOptionPane.showInputDialog(null, "Ingrese el DNI del expediente:");
+            if (dni != null && !dni.isEmpty()) {
+                new RegistroMovimiento(gestionExp, dni).setVisible(true);
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(null, "Debe ingresar un DNI para continuar.");
+            }
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BGuardar;
+    private javax.swing.JTextArea TAObservacion;
+    private javax.swing.JTextField TMovimiento;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

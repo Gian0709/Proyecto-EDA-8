@@ -6,7 +6,10 @@ package sistemaregistro.admin;
 
 import Clases.Expediente;
 import Clases.GestionExpediente;
+import Clases.NodoDoble;
+import Clases.FiltroFinalizar;
 import Clases.Nodo;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 /**
  *
@@ -15,6 +18,9 @@ import javax.swing.table.DefaultTableModel;
 public class ConsultarExpedientes extends javax.swing.JFrame {
     
     private GestionExpediente gestionExp;
+    private Expediente Exp;
+    private FiltroFinalizar<Expediente> listaDoble;
+    private NodoDoble<Expediente> nodoActual;
 
     /**
      * Creates new form ConsultarExpedientes
@@ -25,7 +31,37 @@ public class ConsultarExpedientes extends javax.swing.JFrame {
         initComponents();
     }
     
-    private void cargarExpedientes(boolean finalizados) {
+    private void cargarExpedientes() {
+        if (nodoActual != null) {
+            Expediente exp = nodoActual.getElemento();
+            DefaultTableModel modelo = new DefaultTableModel();
+            modelo.addColumn("ID");
+            modelo.addColumn("Prioridad");
+            modelo.addColumn("DNI");
+            modelo.addColumn("Asunto");
+            modelo.addColumn("Documento Inicial");
+            modelo.addColumn("Documento Resultado");
+            modelo.addColumn("Fecha Inicio");
+            modelo.addColumn("Fecha Final");
+            
+            modelo.addRow(new Object[]{
+                exp.getIdentificador(),
+                exp.getPrioridad(),
+                exp.getDni(),
+                exp.getAsunto(),
+                exp.getDocumento(),
+                exp.getDocumentoResultado() != null ? exp.getDocumentoResultado() : "N/A",
+                exp.getFechaInicio(),
+                exp.getFechaFinal() != null ? exp.getFechaFinal() : "Pendiente"
+            });
+            jTable1.setModel(modelo);
+        } else {
+            JOptionPane.showMessageDialog(this, "No hay expedientes en la lista");
+        }
+
+    }
+    
+    private void cargarExpedientesEnTabla(boolean finalizados) {
         DefaultTableModel modelo = new DefaultTableModel();
         modelo.addColumn("ID");
         modelo.addColumn("Prioridad");
@@ -36,7 +72,7 @@ public class ConsultarExpedientes extends javax.swing.JFrame {
         modelo.addColumn("Fecha Inicio");
         modelo.addColumn("Fecha Final");
 
-        Nodo actual = gestionExp.obtenerExpedientesFiltrados(finalizados);
+        NodoDoble<Expediente> actual = gestionExp.obtenerExpedientesFiltrados(finalizados).getCabeza();
 
         while (actual != null) {
             Expediente exp = (Expediente) actual.getElemento();
@@ -70,6 +106,11 @@ public class ConsultarExpedientes extends javax.swing.JFrame {
         BtFinalizados = new javax.swing.JButton();
         BtNoFinalizados = new javax.swing.JButton();
         BtCerrarConsulta = new javax.swing.JButton();
+        jVerMovimientos = new javax.swing.JButton();
+        BtAnterior = new javax.swing.JButton();
+        BtSiguiente = new javax.swing.JButton();
+        BtTablaNoFinalizados = new javax.swing.JButton();
+        BtTablaFinalizados = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -111,36 +152,102 @@ public class ConsultarExpedientes extends javax.swing.JFrame {
             }
         });
 
+        jVerMovimientos.setBackground(new java.awt.Color(255, 200, 75));
+        jVerMovimientos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jVerMovimientos.setText("Ver Movimientos");
+        jVerMovimientos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jVerMovimientosActionPerformed(evt);
+            }
+        });
+
+        BtAnterior.setBackground(new java.awt.Color(255, 200, 130));
+        BtAnterior.setText("Anterior");
+        BtAnterior.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtAnteriorActionPerformed(evt);
+            }
+        });
+
+        BtSiguiente.setBackground(new java.awt.Color(255, 200, 130));
+        BtSiguiente.setText("Siguiente");
+        BtSiguiente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtSiguienteActionPerformed(evt);
+            }
+        });
+
+        BtTablaNoFinalizados.setBackground(new java.awt.Color(255, 149, 50));
+        BtTablaNoFinalizados.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        BtTablaNoFinalizados.setText("Ver Tabla No Finalizados");
+        BtTablaNoFinalizados.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtTablaNoFinalizadosActionPerformed(evt);
+            }
+        });
+
+        BtTablaFinalizados.setBackground(new java.awt.Color(255, 149, 50));
+        BtTablaFinalizados.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        BtTablaFinalizados.setText("Ver Tabla Finalizados");
+        BtTablaFinalizados.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtTablaFinalizadosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 738, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(96, 96, 96)
-                .addComponent(BtNoFinalizados, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 225, Short.MAX_VALUE)
-                .addComponent(BtFinalizados, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(97, 97, 97))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(BtCerrarConsulta)
-                .addGap(331, 331, 331))
+                .addGap(86, 86, 86)
+                .addComponent(BtTablaNoFinalizados, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(BtTablaFinalizados, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(107, 107, 107))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(195, 195, 195)
+                        .addComponent(BtAnterior)
+                        .addGap(191, 191, 191)
+                        .addComponent(BtSiguiente))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(66, 66, 66)
+                        .addComponent(BtNoFinalizados, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(54, 54, 54)
+                        .addComponent(jVerMovimientos, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(68, 68, 68)
+                        .addComponent(BtFinalizados, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(325, 325, 325)
+                        .addComponent(BtCerrarConsulta)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(BtTablaNoFinalizados, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(BtTablaFinalizados, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BtNoFinalizados, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jVerMovimientos, javax.swing.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
                     .addComponent(BtFinalizados, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(BtAnterior)
+                    .addComponent(BtSiguiente))
+                .addGap(18, 18, 18)
                 .addComponent(BtCerrarConsulta)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addGap(8, 8, 8))
         );
 
         pack();
@@ -148,18 +255,74 @@ public class ConsultarExpedientes extends javax.swing.JFrame {
 
     private void BtFinalizadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtFinalizadosActionPerformed
         // TODO add your handling code here:
-        cargarExpedientes(true);
+        listaDoble = gestionExp.obtenerExpedientesFiltrados(true);
+        nodoActual = listaDoble.getCabeza();
+        cargarExpedientes();
     }//GEN-LAST:event_BtFinalizadosActionPerformed
 
     private void BtNoFinalizadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtNoFinalizadosActionPerformed
         // TODO add your handling code here:
-        cargarExpedientes(false);
+        listaDoble = gestionExp.obtenerExpedientesFiltrados(false);
+        nodoActual = listaDoble.getCabeza();
+        cargarExpedientes();
     }//GEN-LAST:event_BtNoFinalizadosActionPerformed
 
     private void BtCerrarConsultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtCerrarConsultaActionPerformed
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_BtCerrarConsultaActionPerformed
+
+    private void jVerMovimientosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jVerMovimientosActionPerformed
+        // TODO add your handling code here:
+        int filaSeleccionada = jTable1.getSelectedRow();
+        
+        if (filaSeleccionada == -1) {
+            System.out.println("No se seleccionó ninguna fila.");
+            javax.swing.JOptionPane.showMessageDialog(this, "Selecciona un expediente de la tabla primero");
+            return;
+        }
+        
+        String dni = jTable1.getValueAt(filaSeleccionada, 2).toString();
+        System.out.println("DNI seleccionado: " + dni);
+        
+        Clases.NodoMovimiento movimientos = gestionExp.obtenerMovimientoporDNI(dni);
+        
+        if (movimientos == null || movimientos.getMovimiento() == null) {
+            JOptionPane.showMessageDialog(this, "Este expediente no tiene movimientos registrados.");
+            return;
+        }
+        
+        VerMovimientos vM = new VerMovimientos(this.gestionExp, dni);
+        vM.setVisible(true);
+    }//GEN-LAST:event_jVerMovimientosActionPerformed
+
+    private void BtSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtSiguienteActionPerformed
+        // TODO add your handling code here:
+        if (nodoActual != null && nodoActual.getSiguiente() != null) {
+            nodoActual = nodoActual.getSiguiente();
+            cargarExpedientes();
+        }
+    }//GEN-LAST:event_BtSiguienteActionPerformed
+
+    private void BtAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtAnteriorActionPerformed
+        // TODO add your handling code here:
+        if (nodoActual != null && nodoActual.getAnterior() != null) {
+            nodoActual = nodoActual.getAnterior();
+            cargarExpedientes();
+        } else {
+            JOptionPane.showMessageDialog(this, "Estas en el primer expediente");
+        }
+    }//GEN-LAST:event_BtAnteriorActionPerformed
+
+    private void BtTablaNoFinalizadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtTablaNoFinalizadosActionPerformed
+        // TODO add your handling code here:
+        cargarExpedientesEnTabla(false);
+    }//GEN-LAST:event_BtTablaNoFinalizadosActionPerformed
+
+    private void BtTablaFinalizadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtTablaFinalizadosActionPerformed
+        // TODO add your handling code here:
+        cargarExpedientesEnTabla(true);
+    }//GEN-LAST:event_BtTablaFinalizadosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -198,10 +361,15 @@ public class ConsultarExpedientes extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BtAnterior;
     private javax.swing.JButton BtCerrarConsulta;
     private javax.swing.JButton BtFinalizados;
     private javax.swing.JButton BtNoFinalizados;
+    private javax.swing.JButton BtSiguiente;
+    private javax.swing.JButton BtTablaFinalizados;
+    private javax.swing.JButton BtTablaNoFinalizados;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JButton jVerMovimientos;
     // End of variables declaration//GEN-END:variables
 }

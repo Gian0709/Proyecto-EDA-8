@@ -7,6 +7,9 @@ package sistemaregistro.admin;
 import Clases.Expediente;
 import Clases.GestionExpediente;
 import Clases.Nodo;
+import Clases.Alerta;
+import Clases.NodoAlerta;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -45,6 +48,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         BtSeguimiento = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         BMovimiento = new javax.swing.JButton();
+        BtAlertas = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -108,20 +112,26 @@ public class MenuPrincipal extends javax.swing.JFrame {
             }
         });
 
+        BtAlertas.setText("Alertas");
+        BtAlertas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtAlertasActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(BtFinTra, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(325, 325, 325))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 810, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(339, 339, 339))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 810, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(234, 234, 234)
                         .addComponent(jLabel1)
@@ -136,6 +146,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(BMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(375, 375, 375)
+                .addComponent(BtAlertas)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -145,14 +159,17 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(BtAgregarExp, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(BtSeguimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(BtListExp, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(BMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(BtListExp, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(BtAgregarExp, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(BtSeguimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(BMovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
                 .addComponent(BtFinTra, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(57, 57, 57))
+                .addGap(18, 18, 18)
+                .addComponent(BtAlertas)
+                .addGap(16, 16, 16))
         );
 
         pack();
@@ -218,9 +235,28 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
     private void BMovimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BMovimientoActionPerformed
         // TODO add your handling code here:
-        Movimiento rm = new Movimiento();
+        String dni = JOptionPane.showInputDialog(this,"Ingrese el DNI del expediente: ");
+        if (dni == null || dni.isEmpty()){
+            JOptionPane.showMessageDialog(this, "No se encontro el expediente con ese DNI ");
+        }
+        Expediente exp = gestionExp.buscarPorDNI(dni);
+        if (exp == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, "No se encontro el expediente con DNI: " + dni);
+            return;
+        }
+        RegistroMovimiento rm = new RegistroMovimiento(gestionExp, dni);
         rm.setVisible(true);
     }//GEN-LAST:event_BMovimientoActionPerformed
+
+    private void BtAlertasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtAlertasActionPerformed
+        // TODO add your handling code here:
+        Alerta<Expediente> pendientes = gestionExp.generarAlertasPendientes();
+        if (pendientes.estaVacia()) {
+            JOptionPane.showMessageDialog(this, "No hay expedientes pendientes");
+        }
+        AlertasPendientes alertas = new AlertasPendientes(pendientes);
+        alertas.setVisible(true);
+    }//GEN-LAST:event_BtAlertasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -254,6 +290,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BMovimiento;
     private javax.swing.JButton BtAgregarExp;
+    private javax.swing.JButton BtAlertas;
     private javax.swing.JButton BtFinTra;
     private javax.swing.JButton BtListExp;
     private javax.swing.JButton BtSeguimiento;
